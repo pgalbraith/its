@@ -28,3 +28,6 @@
 [submodule "tools/pdp6"]
 	path = tools/pdp6
 	url = https://github.com/aap/pdp6
+[submodule "tools/simlac"]
+	path = tools/simlac
+	url = https://github.com/livingcomputermuseum/sImlac
