@@ -1,0 +1,101 @@
+	title 1sim - PDP-1 simulator
+
+
+ac=1
+io=2
+
+a=10
+b=11
+c=12
+d=13
+p=17
+
+start:	setzb ac,io
+	movei d,insn-data
+	jrst insn
+
+transl:	move a,data-insn-1(p)
+	lshc a,-12.
+	move a,itab(a)
+	movem a,-1(p)
+	movei a,data_-12.
+	lshc a,12.
+	hrrm a,-1(p)
+	jsp -1(p)
+
+itab:	.
+	.
+	and ac,		;AND
+	and ac,@
+	ior ac,		;IOR
+	ior ac,@
+	xor ac,		;XOR
+	xor ac,@
+	xct		;XCT
+	xct @
+	.
+	.
+	.
+	.
+	.		;CAL
+	.		;JDA
+	hrre ac,	;LAC
+	hrre ac,@
+	move io,	;LIO
+	move io,@
+	movem ac,	;DAC
+	movem ac,@
+	hrrm ac,	;DAP
+	hrrm ac,@
+	.		;DIP
+	.
+	movem io,	;DIO
+	movem io,@
+	setzm		;DZM
+	setzm @
+	add ac,		;TAD
+	add ac,@
+	.		;ADD
+	.
+	.		;SUB
+	.
+	SOS AC,		;IDX
+	SOS AC,@
+	SOSGE AC,	;ISP
+	SOSGE AC,@
+	CAMN AC,	;SAD
+	CAMN AC,@
+	CAME AC,	;SAS
+	CAME AC,@
+	.		;MUL
+	.
+	.		;DIV
+	.
+	jrst		;JMP
+	jrst @
+	jsp ac,		;JSP
+	jsp ac,@
+	.		;SKP
+	.
+	.		;SFT
+	.
+	MOVEI		;LAW
+	MOVNI
+	.		;IOT
+	.
+	.
+	.
+	.		;OPR
+	.
+
+ifn .-itab-100, .err ITAB is wrong.
+
+loc 1_12.
+data:	020000+10 ;and
+	040000+11 ;ior
+	060000+12 ;xor
+
+loc 2_12.
+insn:	repeat 10000,jsp p,transl
+
+end start
