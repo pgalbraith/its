@@ -1253,7 +1253,6 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; m iml_sysbin; maze bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 respond "*" ":midas sysbin;_klh; mazser\r"
 respond "NPTCL=" "1\r"
@@ -1274,7 +1273,6 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; swar iml_imlac; swar bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 # PONG
 respond "*" ":midas imlac;_imsrc; pong\r"
@@ -1282,7 +1280,6 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; pong iml_imlac; pong bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 # CRASH
 respond "*" ":midas imlac;_imsrc; crash\r"
@@ -1290,7 +1287,6 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; crash iml_imlac; crash bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 # KLH's Knight TV clock.
 respond "*" ":midas klh; ts tinyw_klh; clock\r"
