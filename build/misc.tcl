@@ -13,6 +13,25 @@ respond "*" "purify\033g"
 respond "TS MIDAS" "midas;ts 324\r"
 respond "*" ":kill\r"
 
+# MIDAS 77, needed for MUSRUN.
+respond "*" ":job midas\r"
+respond "*" ":load sysbin; midas 77bin\r"
+# Patch to accomodate more symbols returned from .GETSYS.
+respond "*" "tsymgt+5/"
+respond "P" "10\r"
+respond "\n" "purify\033g"
+expect "PURIFIED"
+respond "*" ":pdump midas; ts 77\r"
+respond "*" ":kill\r"
+
+# MIDAS 73, bootstrapped from 77.
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "MIDAS; TS 73_MIDAS; MIDAS 73\r"
+respond "*" ":midas;73\r"
+respond "MIDAS.73" "MIDAS; TS 73_MIDAS; MIDAS 73\r"
+respond "*" ":xfile midas; patch 73\r"
+expect ":kill"
+
 # MACTAP
 respond "*" ":midas;324 sysbin;_sysen2; mactap\r"
 expect ":KILL"
@@ -45,8 +64,25 @@ respond "*" ":midas sys1;ts salv_system;salv\r"
 respond "time-sharing?" "y\r"
 expect ":KILL"
 
+# macdmp, PDP-10 hardware read in, with 340 support.
+respond "*" ":midas;77\r"
+respond "MIDAS.77" ".;MACDMP RIM10_SYSENG; MACDMP MOBY1\r"
+expect ":KILL"
+# macdmp, PDP-6 read in hack.
+respond "*" ":midas;77\r"
+respond "MIDAS.77" ".;MACDMP RIM2_SYSENG; MACDMP 6U32\r"
+expect ":KILL"
+
 # system gen
 respond "*" ":midas;324 dsk0:.;@ sysgen_syseng; system gen\r"
+expect ":KILL"
+
+# mark
+respond "*" ":midas;324 dsk0:.;@ mark_syseng; mark\r"
+expect ":KILL"
+
+# utnam
+respond "*" ":midas sys3; ts utnam_lars; utnam\r"
 expect ":KILL"
 
 respond "*" ":midas sys3;ts syslod_sysen1;syslod\r"
@@ -107,7 +143,7 @@ respond "System?" "ITS\r"
 expect ":KILL"
 respond "*" ":link sys2;ts dc,sys1;ts dcrock\r"
 
-# Zork
+# Not Zork
 respond "*" ":midas sys3;ts zork_sysen3;zork\r"
 expect ":KILL"
 
@@ -228,6 +264,11 @@ respond "*" ":link dragon; hourly gcbulk,sysbin; gcmail bin\r"
 respond "*" ":midas sysbin;qmail_ksc;qmail\r"
 respond "PWORD version (Y or N)? " "N\r"
 expect ":KILL"
+respond "*" ":job qmail\r"
+respond "*" ":load sysbin;\r"
+respond "*" "purify\033g"
+respond "QMAIL BIN" "\r"
+respond "*" ":kill\r"
 
 respond "*" ":link sys;ts mail,sysbin;qmail bin\r"
 respond "*" ":link sys;ts qmail,sysbin;qmail bin\r"
@@ -424,7 +465,7 @@ expect ":KILL"
 respond "*" ":link device;tcp syn015,sysbin;datsrv bin\r"
 
 # WEBSER
-respond "*" ":xfile hack;make webser\r"
+respond "*" ":xfile sysnet;make webser\r"
 expect -timeout 300 "*:kill"
 
 # mailt
@@ -440,7 +481,7 @@ respond "*" "advent=advent\r"
 respond "CORE USED" "\032"
 type ":kill\r"
 respond "*" ":dec sys:loader\r"
-respond "*" "advent/go\r"
+respond "*" "advent/g\r"
 respond "EXIT" ":start\r"
 respond "*" "\032"
 type ":start 45\r"
@@ -458,7 +499,7 @@ type ":kill\r"
 respond "*" ":dec sys:loader\r"
 respond "*" "adv3sb\r"
 respond "*" "adv3sr\r"
-respond "*" "/go\r"
+respond "*" "/g\r"
 respond "EXIT" ":start\r"
 respond "*" "adv3db.1"
 respond "*" "\032"
@@ -477,7 +518,7 @@ type ":kill\r"
 respond "*" ":dec sys:loader\r"
 respond "*" "adv4ma\r"
 respond "*" "adv4su\r"
-respond "*" "/go\r"
+respond "*" "/g\r"
 respond "EXIT" ":start\r"
 respond "*" "adv4db.2"
 respond "Are you a wizard?" "\032"
@@ -494,7 +535,7 @@ respond "CORE USED" "\032"
 type ":kill\r"
 respond "*" ":dec sys:loader\r"
 respond "*" "trek\r"
-respond "*" "/go\r"
+respond "*" "/g\r"
 respond "EXIT" ":start 45\r"
 respond "Command:" "d"
 respond "*" ":pdump games; ts trek\r"
@@ -556,6 +597,14 @@ respond "designs" "\r"
 respond "suns" "\r"
 expect ":KILL"
 
+# PDP-6/10 Dazzle Dart
+respond "*" ":midas games;ts dazdrt_klh; dazdrt\r"
+respond "Run under ITS?" "YES\r"
+expect ":KILL"
+respond "*" ":midas;324 dsk0:.;@ dazdrt_klh; dazdrt\r"
+respond "Run under ITS?" "NO\r"
+expect ":KILL"
+
 # Dazzle Dart, video game for the Logo group PDP-11/45
 respond "*" ":palx bs;_dazzle\r"
 expect ":KILL"
@@ -607,6 +656,20 @@ respond "*" ":midas lars; ts munch_munch\r"
 expect ":KILL"
 respond "*" ":midas /t dsk0: .; @ munch_lars; munch\r"
 respond "with ^C" ".iotlsr==jfcl\r\003"
+expect ":KILL"
+
+# Minskytron, translated from PDP-1.
+respond "*" ":midas dsk0: lars; ts minsky_minsky tron\r"
+expect ":KILL"
+respond "*" ":link dsk0: .; @ minsky, lars; ts minsky\r"
+
+# Edward Lorenz' strange attactor.
+respond "*" ":midas dsk0: lars; ts lorenz_lorenz\r"
+expect ":KILL"
+respond "*" ":link dsk0: .; @ lorenz, lars; ts lorenz\r"
+
+# Mandelbrot.
+respond "*" ":midas lars; ts tvbrot_tvbrot\r"
 expect ":KILL"
 
 # PI
@@ -709,7 +772,7 @@ expect "CORE USED"
 respond "*" "\003"
 respond "*" ":kill\r"
 respond "*" ":dec sys:loader\r"
-respond "*" "cross/go\r"
+respond "*" "cross/g\r"
 respond "*" ":start 45\r"
 respond "Command:" "d"
 respond "*" ":pdump sys1; ts cross\r"
@@ -746,8 +809,13 @@ expect ":KILL"
 respond "*" ":link sys1;ts charfs,sys1;ts charfc\r"
 
 # file
-respond "*" ":midas device;chaos file_syseng;file\r"
+respond "*" ":midas sysbin;_syseng;file\r"
 expect ":KILL"
+respond "*" ":job file\r"
+respond "*" ":load sysbin;\r"
+respond "*" "purify\033g"
+respond "CHAOS FILE" "\r"
+respond "*" ":kill\r"
 
 # filei, fileo
 respond "*" ":midas device;chaos filei_eak;file\r"
@@ -861,8 +929,13 @@ respond "*" ":midas sysnet;ts yow_sysen2; yow\r"
 expect ":KILL"
 
 # @
-respond "*" ":midas sys;ts @_sysen1;@\r"
+respond "*" ":midas sysbin;_sysen1;@\r"
 expect ":KILL"
+respond "*" ":job @\r"
+respond "*" ":load sysbin;\r"
+respond "*" "purify\033g"
+respond "TS @" "\r"
+respond "*" ":kill\r"
 
 # PLAN/CREATE
 respond "*" ":midas sys3;ts create_syseng;create\r"
@@ -1060,6 +1133,81 @@ respond "*" ":midas sys3;ts expn_sysnet;expn\r"
 expect ":KILL"
 respond "*" ":link sys3;ts vrfy,sys3;ts expn\r"
 
+# MUSCOM
+respond "*" ":midas sysbin;_syseng; muscom\r"
+expect ":KILL"
+respond "*" ":link sys1;ts muscom, sysbin; muscom bin\r"
+
+# MUSRUN
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_SYSENG; MUSRUN\r"
+expect ":KILL"
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_SYSENG; H10D\r"
+expect ":KILL"
+respond "*" ":stink\r"
+respond "\n" "msysbin; musrun\033l\033\033"
+respond "\n" "mh10d\033l\033\033"
+respond "\n" "jmusrun\033?d\033\033"
+respond "\n" "\033y"
+respond " " "sys1; ts musrun\r"
+respond "*" ":kill\r"
+
+# BIG
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_SYSENG; BIG\r"
+expect ":KILL"
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_PRS; SUDSUD\r"
+expect ":KILL"
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_PRS; PLOT\r"
+expect ":KILL"
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_PRS; FIGS\r"
+expect ":KILL"
+respond "*" ":midas;77\r"
+respond "MIDAS.77" "SYSBIN;_PRS; SMOLDM\r"
+expect ":KILL"
+respond "*" ":stink\r"
+respond "\n" "msysbin;sudsud\033l\033\033"
+respond "\n" "mbig\033l\033\033"
+respond "\n" "mfigs\033l\033\033"
+respond "\n" "mplot\033l\033\033"
+respond "\n" "msmoldm\033l\033\033"
+respond "\n" "jbig\033?d\033\033"
+respond "\n" "\033y"
+respond " " "sys1; ts big\r"
+respond "*" ":kill\r"
+
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC GRYMG_DECUS;GRYMG MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC HDN_DECUS;HDN MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC JSBI13_DECUS;JSBI13 MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC JSBI1_DECUS;JSBI1 MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC MIDNIT_DECUS;MIDNIT MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC OLITTL_DECUS;OLITTL MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC PAPER_DECUS;PAPER MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC SILVER_DECUS;SILVER MUS\r"
+expect "$^X."
+respond "*" ":muscom\r"
+respond "MUSCOM" "PDP10;MUSIC WINCH_DECUS;WINCH MUS\r"
+expect "$^X."
+
 # WHOLIN
 respond "*" ":midas sys2;ts wholin_sysen2;wholin\r"
 expect ":KILL"
@@ -1197,6 +1345,10 @@ respond "*" ":midas sys1; ts imload_syseng; imload\r"
 expect ":KILL"
 respond "*" ":link sys1; ts imtran, sys1; ts imload\r"
 
+# UNTRAN
+respond "*" ":midas imlac; ts untran_untran\r"
+expect ":KILL"
+
 # IMPRNT
 respond "*" ":midas sys1; ts imprnt_syseng; imprnt\r"
 expect ":KILL"
@@ -1233,6 +1385,41 @@ expect ":KILL"
 respond "*" ":midas sys2; ts tvedit_sysen2; tvedit\r"
 expect ":KILL"
 
+# BLKLDR, Imlac secondary block loader.
+respond "*" ":midas sysbin;_imsrc; blkldr\r"
+expect ":KILL"
+# IMTRAN will put the file IMLAC; IMLAC BLKLDR first in its output.
+# The BLKLDR file should say !blk ldr! on the first line.
+respond "*" ":create imlac; imlac blkldr\r"
+respond "help." "!blk ldr!\r\003"
+respond "*" "imtran\033\013"
+# The IMTRAN output is in block loader format, but the block loader
+# itself is in the special TTY bootstrap format.  Patch IMTRAN to not
+# write flat data without blocks.
+respond "@" "\032"
+type "smalup+5/"
+respond "EMIT2" "jfcl\r"
+type "smalup+11/"
+respond "EMIT4" "jfcl\r"
+type "datlup+4/"
+respond "EMIT4" "jfcl\r"
+type "prgend/"
+type "jrst prgen1+4\r"
+type "\033p"
+type "imlac; imlac blkldr_sysbin; blkldr bin\r"
+respond "@" "\021"
+expect ":KILL"
+
+# SSV 22, Imlac scroll saver
+respond "*" ":midas;324 sysbin;_imsrc; ssv22\r"
+expect ":KILL"
+respond "*" ":imtran\r"
+respond "@" "imlac; ssv22 iml_sysbin; ssv22 bin\r"
+respond "@" "\021"
+expect ":KILL"
+respond "*" ":link imlac; .prgm. normal, imlac; ssv22 iml\r"
+type ":vk\r"
+
 # Assemble SSV4.
 respond "*" ":midas imlac; ts assv4_assv4\r"
 expect ":KILL"
@@ -1253,7 +1440,6 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; m iml_sysbin; maze bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 respond "*" ":midas sysbin;_klh; mazser\r"
 respond "NPTCL=" "1\r"
@@ -1274,7 +1460,6 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; swar iml_imlac; swar bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 # PONG
 respond "*" ":midas imlac;_imsrc; pong\r"
@@ -1282,15 +1467,21 @@ expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; pong iml_imlac; pong bin\r"
 respond "@" "\021"
-type ":kill\r"
 
-# CRASH
+# CRASH, PDS-4 version
 respond "*" ":midas imlac;_imsrc; crash\r"
+expect ":KILL"
+respond "*" ":imtran\r"
+respond "@" "imlac; crash4 iml_imlac; crash bin\r"
+respond "@" "\021"
+# PDS-1 version
+respond "*" ":midas /t imlac;_imsrc; crash\r"
+respond "with ^C" "PDS4==0\r\003"
+respond "with ^C" "PDS4==0\r\003"
 expect ":KILL"
 respond "*" ":imtran\r"
 respond "@" "imlac; crash iml_imlac; crash bin\r"
 respond "@" "\021"
-type ":kill\r"
 
 # KLH's Knight TV clock.
 respond "*" ":midas klh; ts tinyw_klh; clock\r"
@@ -1787,7 +1978,7 @@ respond "*" "logo=logo\r"
 respond "CORE USED" "\032"
 type ":kill\r"
 respond "*" ":dec sys:loader\r"
-respond "*" "logo/go\r"
+respond "*" "logo/g\r"
 respond "EXIT" ":start 45\r"
 respond "Command:" "d"
 respond "*" ":pdump bbn; ts logo\r"
@@ -1849,6 +2040,10 @@ expect ":KILL"
 # The ERROR lines printed during assembly are locations of unlikely
 # runtime errors (e.g. not being able to open TTY:).
 respond "*" ":midas sys;ts monit_dmcg;monit\r"
+expect ":KILL"
+
+# BANNER
+respond "*" ":midas sys3;ts banner_sysen2; banner\r"
 expect ":KILL"
 
 # IBMASC

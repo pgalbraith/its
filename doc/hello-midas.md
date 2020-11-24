@@ -4,7 +4,7 @@ Step by step guide on how to create a hello world in MIDAS.
 
 1. Login.
 
-2. Start EMACS and enter this program.  You can skip the comments.
+2. Start EMACS (type `:emacs`) and enter this program.  You can skip the comments.
 
     ```
     title hello
@@ -37,3 +37,5 @@ Step by step guide on how to create a hello world in MIDAS.
 6. Run the program.
 
        :hello
+
+The sample program can be found in the HELLO directory.

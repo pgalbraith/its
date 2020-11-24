@@ -7,6 +7,14 @@ proc log_progress {x} {
 
 log_progress "ENTERING MAIN BUILD SCRIPT"
 
+if [info exists env(MCHN)] {
+    set mchn "$env(MCHN)"
+}
+
+puts ""
+puts "BUILDING $mchn ITS"
+puts ""
+
 # If the environment variable BASICS is set to "yes", only build
 # the basics; ITS, tools, infastructure.
 if {![info exists env(BASICS)]} {
@@ -20,6 +28,9 @@ if {![info exists env(BASICS)]} {
 if {![info exists env(MACSYMA)]} {
     set env(MACSYMA) "yes"
 }
+
+# If the NODUMP environment variable is set, don't do the final full
+# dump.
 
 proc cleanup {} {
     global spawn_id
@@ -167,6 +178,7 @@ if {$env(BASICS)!="yes"} {
 	source $build/macsyma.tcl
     }
     source $build/scheme.tcl
+    source $build/dm.tcl
     source $build/muddle.tcl
     source $build/sail.tcl
     source $build/typeset.tcl
@@ -185,19 +197,20 @@ respond "*" ":copy sys; ts ddt, dsk0: backup;\r"
 respond "*" ":copy sys; ts dump, dsk0: backup;\r"
 respond "*" ":copy sys; ts midas, dsk0: backup;\r"
 
-# make output.tape
-
-respond "*" $emulator_escape
-create_tape "$out/output.tape"
-type ":dump\r"
-respond "_" "dump links full list\r"
-respond "LIST DEV =" "tty\r"
-respond "TAPE NO=" "1\r"
-expect -timeout 3000 "REEL"
-respond "_" "rewind\r"
-respond "_" "icheck\r"
-expect -timeout 3000 "_"
-type "quit\r"
+if {![info exists env(NODUMP)]} {
+    # make output.tape
+    respond "*" $emulator_escape
+    create_tape "$out/output.tape"
+    type ":dump\r"
+    respond "_" "dump links full list\r"
+    respond "LIST DEV =" "tty\r"
+    respond "TAPE NO=" "1\r"
+    expect -timeout 6000 "REEL"
+    respond "_" "rewind\r"
+    respond "_" "icheck\r"
+    expect -timeout 6000 "_"
+    type "quit\r"
+}
 
 shutdown
 quit_emulator

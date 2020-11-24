@@ -34,9 +34,15 @@ board on a Type 340 display.  Type
 <code>FANCY<kbd>TAB</kbd>2<kbd>Enter</kbd></code> to get the fanc
 chess board.
 
-### Maze War
+### Maze
 
-First multi-user first person shooter.  Type `:games;maze` to play.
+First multi-user first person shooter.  When logged in on an Imlac,
+type `:games;maze c` to play.  The `c` is necessary to avoid
+restrictions on when the game can be played.  Use `r` to start a robot
+player.
+
+Game controls are: Arrow keys to move around, ESC to fire, and TAB to
+see the overhead view.  ^Z exits back to ITS.
 
 ### MAZLIB
 
@@ -85,5 +91,17 @@ Enter a cave and hunt a creature called a wumpus.  To play this, type
 
 ### Zork
 
-There appears before you a huge figure clothed in a dark robe.  As you
-shrink back in awe, he speaks: "Please help us get Zork running!"
+Classic text adventure game.  To play, type `zork^K`.  For the save
+function to work, you must be logged in, have a user directory, and
+have a "\_MSGS_ *\<user name>*" file in it.  For example, if you chose
+the user name FOO:
+
+```
+:login foo
+:print foo; ..new. (udir)
+:create foo; _msgs_ foo
+^C
+```
+
+For more information, see [madadv.info](madman/madadv.info) and
+[madadv.help](madman/madadv.info).

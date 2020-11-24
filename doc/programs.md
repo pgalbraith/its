@@ -34,10 +34,13 @@
 - BABYL, mail reading/sending program for EMACS.
 - BABYLM, mail sending program for EMACS.
 - BALANC/MOVDIR, balances directories.
+- BANNER, make banners on line printer.
 - BDAY, happy birthday demon.
+- BIG, music processor.
 - BINPRT, display information about a binary executable file.
 - BITPRT, print JCL as bits.
 - BKG, a Backgammon game.
+- BLKLDR, Imlac secondary block loader.
 - BOLIO, typesetting.
 - BOOTVT, GT40 boot ROM.
 - BYE, say goodbye to user. Used in LOGOUT scripts.
@@ -65,6 +68,7 @@
 - COMSAT, mail server.
 - COOKIE BEAR, prank.
 - CMD, DDT subroutines.
+- CRASH, Imlac game.
 - CRC, compute file CRC.
 - CRASH, Imlac game?
 - CREATE, creates a text file in your home directory from console input.
@@ -74,6 +78,7 @@
 - CTIMES, Chaosnet time server.
 - CTIMSR, Chaosnet time server.
 - CTN, networking "supdup" CRTSTY.
+- CUBE, Rubik's cube.
 - D, SUDS drawing program
 - DATE, print date and time.
 - DATSRV, server for RFC 867 Daytime protocol.
@@ -81,6 +86,8 @@
 - DCROCK, digital watch.
 - DDTDOC, interactive DDT documentation.
 - DECUUO, TOPS-10 and WAITS emulator.
+- DEMST, demon status.
+- DEMSTR, demon starter.
 - DFTP, Datacomputer file transfer.
 - DIGEST, digestify a mailing list.
 - DIRCPY, copy directory.
@@ -186,6 +193,7 @@
 - LOCK, shut down system.
 - LOGO, BBN Logo.
 - LOOKUP, looks up user info in INQUIR database.
+- LORENZ, Edward Lorenz' strange attractor.
 - LOSS (device).
 - LOTCLN - LOGOUT TIMES cleanup program.
 - LSPEED, set TTY line parameters.
@@ -193,6 +201,7 @@
 - LSRPRT, print information about user groups.
 - LUSER, request help from registered list of logged-in users.
 - MBXLOC, lock a mailbox.
+- MACDMP, standalone program loader/dumper for DECtape.
 - MACN80, Z80 cross assembler.
 - MACRO-10, DEC assembler.
 - MACSYMA, symbolic manipulation system.
@@ -203,6 +212,7 @@
 - MAIL, mail sending client.
 - MAILS, Chaosnet mail server.
 - MAILT, allows editing mail (from :MAIL) in EMACS.
+- MARK, mark a DECtape.
 - MAZE, Maze War game.
 - MAZLIB, maze game for EMACS.
 - MCL, subsystem for compiling individual Macsyma files.
@@ -212,6 +222,7 @@
 - MINI36, mini Chaosnet file server (36-bit).
 - MINITS, mini-ITS network utility.
 - MINIC, mini Chaosnet file server (old).
+- MINSKY TRON, display hack translated from the PDP-1.
 - MLDEV/MLSLV, allows access to remote systems as devices (e.g. DB:).
 - MLIFE, Mike Speciner's Conway Life.
 - MODEMS, modems dragon.
@@ -224,6 +235,8 @@
 - MUDINQ, Muddle inquirer.
 - MUNCH, TV-munching square.
 - MUNCH, munching squares for Type 340 display.
+- MUSCOM, music compiler.
+- MUSRUN, play music files.
 - NAME, shows logged in users and locations, aka FINGER.
 - NAMDRG, free TV display.
 - NETIME, network time dragon.
@@ -296,6 +309,7 @@
 - SPROUTS, topological game invented by Conway.
 - SRCCOM, compares/merges source files, and compares binary files.
 - SRDATE, set reference date on a file.
+- SSV, scroll saver for Imlac PDS-1.
 - SSV4, SSV for Imlac PDS-4.
 - STINK, linker.
 - STINKR, new linker (binary only).
@@ -350,13 +364,16 @@
 - TYPE8, type 8-bit file.
 - UFIND, find users.
 - ULISP, Lisp in Lisp.
+- UNSPOO, line printer unspooler demon.
 - UNTALK, split-screen comm-link program.
+- UNTRAN, untranslate an Imlac program.
 - UP/DOWN, check if host is online.
 - UPTIME, Chaosnet uptime server.
 - UPTIME, record ITS uptimes.
 - UPTINI, program to create new UPTIME DATA.
 - URUG, GT40 debugger.
 - USQ/TYPESQ, unsqueeze/uncram or type a file.
+- UTNAM, set DECtape name.
 - VERSA/SPOOLR, Versatec/Gould printer spooler.
 - VDIR, view directory.
 - VIEW, view file.
@@ -384,4 +401,5 @@
 - YAHTZE, the game of Yahtzee.
 - YOW, print Zippyisms.
 - ZAP, dump TV bitmap as an XGP scan file.
+- ZORK, text adventure game.
 - ZOTZ, instruction timing test.

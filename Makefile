@@ -24,21 +24,23 @@ SRC = syseng sysen1 sysen2 sysen3 sysnet kshack dragon channa	\
       jim jm jpg macrak maxdoc maxsrc mrg munfas paulw reh rlb rlb% share \
       tensor transl wgd zz graphs lmlib pratt quux scheme gsb ejs mudsys \
       draw wl taa tj6 budd sharem ucode rvb kldcp math as imsrc gls demo \
-      macsym lmcons dmcg hack hibou agb gt40 rug maeda ms kle aap common \
-      fonts zork 11logo kmp info aplogo bkph bbn pdp11 chsncp sca music1 \
+      macsym lmcons dmcg hibou agb gt40 rug maeda ms kle aap common \
+      fonts lcf 11logo kmp info aplogo bkph bbn pdp11 chsncp sca music1 \
       moon teach ken lmio1 llogo a2deh chsgtv clib sys3 lmio turnip \
       mits_s rab stan_k bs cstacy kp dcp2 -pics- victor imlac rjl mb bh \
-      lars drnil radia gjd maint bolio cent shrdlu vis cbf digest
+      lars drnil radia gjd maint bolio cent shrdlu vis cbf digest prs jsf \
+      decus bsg muds54 hello
 DOC = info _info_ sysdoc sysnet syshst kshack _teco_ emacs emacs1 c kcc \
       chprog sail draw wl pc tj6 share _glpr_ _xgpr_ inquir mudman system \
       xfont maxout ucode moon acount alan channa fonts games graphs humor \
       kldcp libdoc lisp _mail_ midas quux scheme manual wp chess ms macdoc \
       aplogo _temp_ pdp11 chsncp cbf rug bawden llogo eak clib teach pcnet \
       combat pdl minits mits_s chaos hal -pics- imlac maint cent ksc klh \
-      digest
+      digest prs decus bsg madman
 BIN = sys sys1 sys2 emacs _teco_ lisp liblsp alan inquir sail comlap \
       c decsys graphs draw datdrw fonts fonts1 fonts2 games macsym \
-      maint imlac _www_ gt40 llogo bawden sysbin -pics- lmman r shrdlu
+      maint _www_ gt40 llogo bawden sysbin -pics- lmman r shrdlu imlac \
+      pdp10 madman
 MINSRC = midas system $(DDT) $(SALV) $(KSFEDR) $(DUMP)
 
 # These are not included on the tape.
@@ -48,7 +50,7 @@ BINIGNORE=-e '^(ka10|kl10|ks10|minsys)$$'
 # These are on the minsrc tape.
 SRCIGNORE=-e '^(system|midas)$$'
 
-SUBMODULES = dasm itstar klh10 mldev simh sims supdup tapeutils tv11 pdp6
+SUBMODULES = dasm itstar klh10 mldev simh sims supdup tapeutils tv11 pdp6 vt05 tek4010
 
 # These files are used to create bootable tape images.
 RAM = bin/ks10/boot/ram.262
@@ -66,6 +68,9 @@ GT40=tools/simh/BIN/pdp11 $(OUT)/bootvt.img
 TV11=tools/tv11/tv11
 PDP6=tools/pdp6/emu/pdp6
 KLFEDR=tools/dasm/klfedr
+DATAPOINT=tools/vt05/dp3300
+VT52=tools/vt05/vt52
+TEK=tools/tek4010/tek4010
 
 H3TEXT=$(shell cd build; ls h3text.*)
 DDT=$(shell cd src; ls sysen1/ddt.* syseng/lsrtns.* syseng/msgs.* syseng/datime.* syseng/ntsddt.*)
@@ -75,20 +80,34 @@ DUMP=$(shell cd src; ls syseng/dump.* sysnet/netwrk.*)
 SMF:=$(addprefix tools/,$(addsuffix /.gitignore,$(SUBMODULES)))
 OUT=out/$(EMULATOR)
 
-all: $(SMF) $(OUT)/stamp tools/supdup/supdup
+all: its $(OUT)/emulators tools/supdup/supdup
+
+its: $(SMF) $(OUT)/stamp
 
 check: all check-dirs
 
 out/klh10/stamp: $(OUT)/rp0.dsk
 	$(TOUCH) $@
 
-out/simh/stamp: $(OUT)/rp0.dsk $(GT40)
+out/klh10/emulators:
 	$(TOUCH) $@
 
-out/pdp10-ka/stamp: $(OUT)/rp03.2 $(OUT)/rp03.3 $(GT40) $(TV11) $(PDP6)
+out/simh/stamp: $(OUT)/rp0.dsk
+	$(TOUCH) $@
+
+out/simh/emulators: $(GT40) $(VT52)
+	$(TOUCH) $@
+
+out/pdp10-ka/stamp: $(OUT)/rp03.2 $(OUT)/rp03.3
+	$(TOUCH) $@
+
+out/pdp10-ka/emulators: $(GT40) $(TV11) $(PDP6) $(DATAPOINT) $(VT52) $(TEK)
 	$(TOUCH) $@
 
 out/pdp10-kl/stamp: $(OUT)/rp04.1
+	$(TOUCH) $@
+
+out/pdp10-kl/emulators: $(VT52) $(TEK)
 	$(TOUCH) $@
 
 $(OUT)/rp0.dsk: build/simh/init $(OUT)/minsys.tape $(OUT)/minsrc.tape $(OUT)/salv.tape $(OUT)/dskdmp.tape build/build.tcl $(OUT)/sources.tape build/$(EMULATOR)/stamp
@@ -106,17 +125,22 @@ $(OUT)/magdmp.tap: $(MAGFRM)
 $(OUT)/kl-magdmp.tap: $(MAGFRM)
 	cd bin/kl10/boot; ../../../$(MAGFRM) magdmp.bin @.ddt salv.bin > ../../../$@
 
-$(OUT)/minsrc.tape: $(ITSTAR)
+$(OUT)/touch-stamp: build/timestamps.txt
+	build/stamp.sh $<
+	$(MKDIR) $(OUT)
+	$(TOUCH) $@
+
+$(OUT)/minsrc.tape: $(OUT)/touch-stamp $(ITSTAR)
 	$(MKDIR) $(OUT)
 	$(ITSTAR) -cf $@ -C src $(MINSRC)
 	$(ITSTAR) -rf $@ -C $(OUT) system
 
-$(OUT)/minsys.tape: $(ITSTAR) $(OUT)/system
+$(OUT)/minsys.tape: $(OUT)/touch-stamp $(ITSTAR) $(OUT)/system
 	$(MKDIR) $(OUT)
 	$(ITSTAR) -cf $@ -C bin/ks10 _ sys
 	$(ITSTAR) -rf $@ -C bin/minsys sys
 
-$(OUT)/ka-minsys.tape: $(ITSTAR) $(OUT)/system
+$(OUT)/ka-minsys.tape: $(OUT)/touch-stamp $(ITSTAR) $(OUT)/system
 	$(MKDIR) $(OUT)
 	$(ITSTAR) -cf $@ -C bin/ka10 _ sys
 	$(ITSTAR) -rf $@ -C bin/minsys sys
@@ -125,7 +149,7 @@ leftparen:=(
 rightparen:=)
 KLDCPDIR=$(OUT)/_klfe_/kldcp.$(leftparen)dir$(rightparen)
 
-$(OUT)/kl-minsys.tape: $(ITSTAR) $(OUT)/system $(KLDCPDIR)
+$(OUT)/kl-minsys.tape: $(OUT)/touch-stamp $(ITSTAR) $(OUT)/system $(KLDCPDIR)
 	$(MKDIR) $(OUT)
 	$(ITSTAR) -cf $@ -C $(OUT) _klfe_
 	$(ITSTAR) -rf $@ -C bin/kl10 _ sys
@@ -135,12 +159,9 @@ $(KLDCPDIR): $(KLFEDR)
 	$(MKDIR) $(OUT)/_klfe_
 	$(KLFEDR) > "$(OUT)/_klfe_/kldcp.$(leftparen)dir$(rightparen)"
 
-$(OUT)/sources.tape: $(ITSTAR) build/$(EMULATOR)/stamp $(OUT)/syshst/$(H3TEXT)
+$(OUT)/sources.tape: $(OUT)/touch-stamp $(ITSTAR) build/$(EMULATOR)/stamp $(OUT)/syshst/$(H3TEXT)
 	$(MKDIR) $(OUT)
 	$(RM) -f src/*/*~
-	$(TOUCH) -t 198110061903.37 'bin/emacs/einit.:ej'
-	$(TOUCH) -t 198109192142.56 'bin/emacs/[pure].162'
-	$(TOUCH) -t 198103312041.45 'bin/emacs/[prfy].173'
 	$(ITSTAR) -cf $@ -C src $(SRC)
 	$(ITSTAR) -rf $@ -C doc $(DOC)
 	$(ITSTAR) -rf $@ -C bin $(BIN)
@@ -229,7 +250,7 @@ $(KLH10):
 	./autogen.sh; \
 	$(MKDIR) tmp; \
 	cd tmp; \
-	export CONFFLAGS_USR=-DKLH10_DEV_DPTM03=0; \
+	export CONFFLAGS_USR="-DKLH10_DEV_DPTM03=0 $$CONFFLAGS_USR"; \
 	../configure --enable-lights --bindir="$(CURDIR)/build/klh10"; \
 	$(MAKE) -C bld-ks-its; \
 	$(MAKE) -C bld-ks-its install
@@ -253,18 +274,30 @@ $(MAGFRM) $(KLFEDR):
 	$(MAKE) -C tools/dasm
 
 $(TV11):
-	$(MAKE) -C tools/tv11 CFLAGS=-O3
+	$(MAKE) -C tools/tv11 tv11 CFLAGS=-O3
 	$(MAKE) -C tools/tv11/tvcon
 
 $(PDP6):
 	$(MAKE) -C tools/pdp6/emu
 
+$(DATAPOINT):
+	$(MAKE) -C tools/vt05 dp3300
+
+$(VT52):
+	$(MAKE) -C tools/vt05 vt52
+
+tek-hack:
+	rm $(TEK)
+
+$(TEK): tek-hack
+	$(MAKE) -C tools/tek4010 tek4010
+
 tools/supdup/supdup:
 	$(MAKE) -C tools/supdup
 
 $(SMF):
-	$(GIT) submodule sync `dirname $@`
-	$(GIT) submodule update --init `dirname $@`
+	$(GIT) submodule sync --recursive `dirname $@`
+	$(GIT) submodule update --recursive --init `dirname $@`
 
 tools/simh/BIN/pdp11:
 	$(MAKE) -C tools/simh pdp11

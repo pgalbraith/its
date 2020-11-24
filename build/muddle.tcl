@@ -1,23 +1,33 @@
 log_progress "ENTERING BUILD SCRIPT: MUDDLE"
 
-respond "*" ":cwd mudsys\r"
-respond "*" ":midas ts stinkm_stink\r"
+# STINK 121T, used to build Muddle
+respond "*" ":midas mudsys;ts stink_sysen2;stink 121t\r"
 expect ":KILL"
-
-respond "*" ":xfile assem xfile\r"
-expect -timeout 300 "Assembly done!"
 
 mkdir "mudsav"
 
-respond "*" ":stinkm\r"
-respond "STINK." "MMUD56 STINK\033@\033\033"
-expect  "SETPUR"
-respond "\n" "D\033\033"
-respond "\n" "strng/\0331\"56^?^?^?\033\r"
-respond "\n" ":pdump mudsav; ts mud56\r"
-respond "*" ":start\r"
-respond "..PERM/   -1" ":pdump mudsav; ts mdl56\r"
-respond "*" ":kill\r"
+proc build_muddle {dir version} {
+	respond "*" ":cwd $dir\r"
+
+	respond "*" ":xfile mud$version assem\r"
+	expect -timeout 300 "Assembly done!"
+
+	respond "*" ":mudsys;stink\r"
+	respond "STINK." "MMUD$version STINK\033@\033\033"
+	expect  "SETPUR"
+	respond "\n" "D\033\033"
+	respond "\n" ":xfile mud$version init\r"
+	expect -timeout 100 "Init done!"
+}
+
+build_muddle "muds54" "54"
+build_muddle "mudsys" "56"
+
+# Generate SAV FILE and FIXUP FILE for Muddle pure code library
+respond "*" ":midas mudsys; ts mksvfl_mudsys;mksvfl\r"
+expect ":KILL"
+respond "*" ":mudsys;mksvfl\r"
+expect ":KILL"
 
 respond "*" ":midas sys3; ts mudinq_sysen2; mudinq\r"
 expect ":KILL"
@@ -26,8 +36,8 @@ respond "*" ":link sys3; ts makscr, sys3; ts mudinq\r"
 respond "*" ":link sys3; ts status, sys3; ts mudinq\r"
 respond "*" ":link sys3; ts whomud, sys3; ts mudinq\r"
 
-respond "*" ":link sys3; ts mdl,mudsav; ts mdl56\r"
-respond "*" ":link sys3; ts muddle,mudsav; ts mdl56\r"
+respond "*" ":link sys3; ts mdl,mudsav; ts mud56\r"
+respond "*" ":link sys3; ts muddle,mudsav; ts mud56\r"
 
 respond "*" ":midas sys3; ts mudcom_sysen3; mudcom\r"
 respond "(Y OR N)" "Y\r"
@@ -41,4 +51,8 @@ respond "(Y OR N)" "Y\r"
 expect ":KILL"
 
 respond "*" ":midas sys3; ts pick_sysen2; pick\r"
+expect ":KILL"
+
+# Zork startup
+respond "*" ":midas sys2; ts zork_taa; zork\r"
 expect ":KILL"

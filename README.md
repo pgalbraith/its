@@ -64,12 +64,16 @@ then `ESC g`.  If you use the `pdp10-kl` emulator there is no prompt
 and you need to type `Esc L ITS`, press Enter, and then `ESC g`.
 Eventually, you will see `SYSTEM JOB USING THIS CONSOLE`.  You are now
 ready to log in, so type Control-Z.  See [doc/DDT.md](doc/DDT.md) for
-a list of useful commands.  When done, shut down orderly by typing
-`:lock` and then `5down`.
+a list of useful commands.
+
+To shut down ITS, type `:lock` and then `5down`.  Log yourself out to
+avoid the 5 minute grace period: type `:logout`.  When ITS writes
+`SHUTDOWN COMPLETE`, it's safe to stop the emulator.
 
 ITS can optionally use some additional peripheral devices.  To attach
-a simulated GT40 graphics terminal, type `./start gt40` when booting
-ITS.
+a simulated GT40 graphics terminal, type `./start gt40`.  If you run
+the KA10 emulator, you can use the Knight TV raster display by typing
+`./start tv11 tvcon`.  On a TV, type <kbd>F1</kbd> instead of <kbd>Control-Z</kbd>.
 
 To install your personal user files, add a subdirectory under `user`
 with your files inside.  They will be copied to ITS.  The directory
@@ -91,11 +95,14 @@ Here is an overview of the repository:
 See the [`doc` subdirectory](doc) for documentation.
 
 There are some short introductions for beginners:
+- [How to create a new user](doc/new-user.md)
 - [DDT cheat sheet for Unix users](doc/DDT.md)
 - [Basic editing with EMACS](doc/EMACS.md)
 - [TECO survival guide](doc/TECO.md)
 - [DDT debugging newbie guide](doc/debugging.md)
 - [Hello MIDAS](doc/hello-midas.md)
+- [Hello Maclisp](doc/hello-lisp.md)
+- [Introduction to Muddle](doc/muddle.md)
 - [DUMP and itstar](doc/DUMP-itstar.md)
 - [Games](doc/games.md)
 - [Printing](doc/printing.md)
@@ -103,6 +110,7 @@ There are some short introductions for beginners:
 - [Com link mode](doc/comlink.md)
 - [Logo](doc/logo.md)
 - [PDP-6](doc/pdp6.md)
+- [Networking](doc/networking.md)
 
 A list of [known ITS machines](doc/machines.md).
 
@@ -123,6 +131,7 @@ Some major applications:
 - Macsyma, symbolic math
 - Maze War, game
 - Midas, assembler
+- Muscom and musrun, for playing music
 - PDP-11 simulator
 - Scheme, interpreter
 - Spacewar!, game
@@ -131,27 +140,3 @@ Some major applications:
 - TOPS-10 and WAITS emulator
 
 There is a [detailed list of all installed programs](doc/programs.md).
-
-### Network Support
-
-Currently, networking is only supported under the KLH10 and SIMH KA10
-and KL10 emulators. The SIMH KS10 does not have the necessary
-support. As of this release, only the ITS monitor, host table tools,
-and binary host table are installed.
-
-Currently, basic TCP network support is in the build, in addition to
-both a TELNET/SUPDUP server, and both TELNET and SUPDUP clients.
-Additionally, both an FTP server and client are included. Chaosnet TELNET 
-and FTP (CHTN and CFTP), but this requires support and configuration
-in the emulator to actually use. SMTP mail inbound and outbound is included,
-as well as local mail delivery.
-
-The KLH10 dskdmp.ini file has an IP address (192.168.1.100) and gateway IP 
-address (192.168.0.45) configured for the ITS system. The IP address 
-matches the address configured in SYSTEM; CONFIG > (as IMPUS3). Finally,
-the HOST table source (SYSHST; H3TEXT >) and binary (SYSBIN; HOSTS3 >)
-defined a host called DB-ITS.EXAMPLE.COM at the IP address 192.168.1.100.
-
-In order to change the IP address of the host, you can edit IP, GW,
-and NETMASK in the file conf/network.  You can also set a Chaosnet
-address.  After that, a full rebuild (e.g. `make clean all`) is required.
